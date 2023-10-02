@@ -1,0 +1,79 @@
+// This is your Prisma schema file 
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./blue_light_db.db"
+}
+
+model User {
+  user_id      String   @id @default(uuid())
+  firstname    String
+  lastname     String?
+  phone        String?
+  role         Boolean
+  isActive     Boolean
+  email        String   @unique
+  password     String
+  registeredAt DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  picture      String?
+}
+
+model Customer {
+  id          String   @id @default(uuid())
+  firstname   String
+  lastname    String?
+  address     String
+  phoneNumber String
+  email       String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  // TODO: Invoices  ->collection
+}
+
+model Service {
+  id            String      @id @default(uuid())
+  invoiceItemId String
+  name          String
+  description   String?
+  price         Decimal
+  invoiceItem   InvoiceItem @relation(fields: [invoiceItemId], references: [id], onDelete: Cascade)
+}
+
+model Invoice {
+  id           String        @id @default(uuid())
+  customerId   String
+  totalAmount  Decimal
+  paidAmount   Decimal
+  issuedDate   DateTime      @default(now())
+  dueDate      DateTime
+  paidDate     DateTime
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  invoiceItems InvoiceItem[]
+
+  // Payments       > collection
+}
+
+model InvoiceItem {
+  id        String    @id @default(uuid())
+  invoiceId String
+  serviceId String
+  quantity  Int
+  price     Decimal
+  invoice   Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  services  Service[]
+}
+
+model Payment {
+  id          String   @id @default(uuid())
+  invoiceId   String
+  amount      Decimal
+  paymentdate DateTime @default(now())
+  //TODO: invoice
+}
