@@ -5,8 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    //"start": "nodemon index.js",
-    // "migrate": "npx prisma migrate dev",
+   
     "db-push": "npx prisma db push",
     "seed": "node prisma/seed.js"
   },
